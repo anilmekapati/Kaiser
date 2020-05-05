@@ -1,0 +1,78 @@
+{
+	"name": "KP_ADF_ETL_DEMO_Batch_Job",
+	"properties": {
+		"activities": [
+			{
+				"name": "Execute KP_ADF_File_List_For_Metadata",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "KP_ADF_File_List_For_Metadata",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Execute KP_ADF_Table_List_For_Metadata",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Execute KP_ADF_File_List_For_Metadata",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "KP_ADF_Table_List_For_Metadata",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Execute KP_ADF_Table_List_For_Load",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "KP_ADF_Table_List_For_Load",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"EmailTo": "KP_ADF_ETL@outlook.com"
+					}
+				}
+			},
+			{
+				"name": "Execute KP_ADF_File_List_Last_Modified_date",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Execute KP_ADF_Table_List_For_Load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "KP_ADF_File_List_Last_Modified_date",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

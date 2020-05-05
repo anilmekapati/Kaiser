@@ -1,0 +1,19 @@
+{
+	"name": "Json1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "FileServerRN",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "FileServerLocation",
+				"fileName": "metadata.txt",
+				"folderPath": "Metadata"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

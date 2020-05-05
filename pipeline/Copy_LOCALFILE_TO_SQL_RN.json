@@ -1,0 +1,275 @@
+{
+	"name": "Copy_LOCALFILE_TO_SQL_RN",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy_6bg",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "/Orders2.csv"
+					},
+					{
+						"name": "Destination",
+						"value": "dbo.ORDERS2"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "FileServerReadSettings",
+							"recursive": true
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings",
+							"skipLineCount": 0
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "Row ID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "RowID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Order ID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "OrderID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Order Date",
+									"type": "String"
+								},
+								"sink": {
+									"name": "OrderDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Ship Date",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ShipDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Ship Mode",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ShipMode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Customer ID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CustomerID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Quantity",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Quantity",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Discount",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Discount",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Profit",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Profit",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Region",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Region",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Product ID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ProductID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Category",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Category",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Sub-Category",
+									"type": "String"
+								},
+								"sink": {
+									"name": "SubCategory",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Product Name",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ProductName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Sales",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Sales",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Customer Name",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CustomerName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Segment",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Segment",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Country",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Country",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "City",
+									"type": "String"
+								},
+								"sink": {
+									"name": "City",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "State",
+									"type": "String"
+								},
+								"sink": {
+									"name": "State",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Postal Code",
+									"type": "String"
+								},
+								"sink": {
+									"name": "PostalCode",
+									"type": "String"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_6bg",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_6bg",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

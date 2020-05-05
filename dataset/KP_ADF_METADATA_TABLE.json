@@ -1,0 +1,26 @@
+{
+	"name": "KP_ADF_METADATA_TABLE",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "KP_ADF_AzureSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "TABLE_NAME",
+				"type": "varchar"
+			},
+			{
+				"name": "METADATA_EXTRACT",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "METADATA_TABLE"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

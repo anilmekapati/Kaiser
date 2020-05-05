@@ -1,0 +1,46 @@
+{
+	"name": "KP_ADF_SQL_Metadata_Info",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "KP_ADF_AzureSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "OBJECT_NAME",
+				"type": "varchar"
+			},
+			{
+				"name": "COLUMN_NAME",
+				"type": "varchar"
+			},
+			{
+				"name": "DATA_TYPE",
+				"type": "varchar"
+			},
+			{
+				"name": "OBJECT_TYPE",
+				"type": "varchar"
+			},
+			{
+				"name": "PRECISION",
+				"type": "varchar"
+			},
+			{
+				"name": "SCALE",
+				"type": "varchar"
+			},
+			{
+				"name": "PUBLIC_TOKEN",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "METADATA_INFO"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

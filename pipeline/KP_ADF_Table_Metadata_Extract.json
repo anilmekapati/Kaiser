@@ -1,0 +1,150 @@
+{
+	"name": "KP_ADF_Table_Metadata_Extract",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get Metadata1",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "KP_ADF_AzureSqlTable2",
+						"type": "DatasetReference",
+						"parameters": {
+							"SRC_TBL_NAME": {
+								"value": "@pipeline().parameters.TABLE_NAME",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"structure"
+					]
+				}
+			},
+			{
+				"name": "dataflow2_database",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Get Metadata1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "KP_ADF_Load_Table_Metadata_to_BLOB",
+						"type": "DataFlowReference",
+						"parameters": {
+							"childitems": {
+								"value": "'@{activity('Get Metadata1').output.structure}'",
+								"type": "Expression"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					}
+				}
+			},
+			{
+				"name": "dataflow3_database",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "dataflow2_database",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "KP_ADF_Load_Table_Metadata_BLOB_to_SQL",
+						"type": "DataFlowReference",
+						"parameters": {
+							"itemname": {
+								"value": "'@{pipeline().parameters.TABLE_NAME}'",
+								"type": "Expression"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					}
+				}
+			},
+			{
+				"name": "Success_Mail",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "dataflow3_database",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://prod-77.westus.logic.azure.com:443/workflows/e048b80d74af46f79a4a98565321f8e4/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=dfuNAasDwxgFnBBYWXRWo0b8kL2pPGiYBcBBYma6n2o",
+					"method": "POST",
+					"body": {
+						"EmailTo": "@{pipeline().parameters.EmailTo}",
+						"Subject": "@{pipeline().Pipeline} job succeeded for @{pipeline().parameters.TABLE_NAME} File",
+						"DataFactoryName": "@{pipeline().DataFactory}",
+						"PipelineName": "@{pipeline().Pipeline}",
+						"Tablename": "Target Table Name METADATA_INFO ",
+						"RowsRead": "1",
+						"RowsWritten": "@{activity('dataflow3_database').output.runStatus.metrics.sink2.rowsWritten}"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"TABLE_NAME": {
+				"type": "String"
+			},
+			"EmailTo": {
+				"type": "string"
+			}
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

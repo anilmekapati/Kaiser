@@ -1,0 +1,21 @@
+{
+	"name": "KP_ADF_Onpremise_Folder",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "KP_ADF_Onpremise_FileServer",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "FileServerLocation"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

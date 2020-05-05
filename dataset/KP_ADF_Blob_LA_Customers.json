@@ -1,0 +1,24 @@
+{
+	"name": "KP_ADF_Blob_LA_Customers",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "KP_ADF_AzureBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "LA_CUSTOMERS.txt",
+				"container": "kp-targets"
+			},
+			"columnDelimiter": "|",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

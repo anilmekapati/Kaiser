@@ -1,0 +1,17 @@
+{
+	"name": "KP_ADF_OracleTable5",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "KP_ADF_Onpremise_Oracle",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "OracleTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "ANIL",
+			"table": "ALL_CUSTOMERS"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

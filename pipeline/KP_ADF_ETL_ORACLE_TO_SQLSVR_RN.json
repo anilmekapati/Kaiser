@@ -1,0 +1,162 @@
+{
+	"name": "KP_ADF_ETL_ORACLE_TO_SQLSVR_RN",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy_Countries_Oracle_SQLsvr",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "HR.COUNTRIES"
+					},
+					{
+						"name": "Destination",
+						"value": "dbo.COUNTRIES"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "OracleSource",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "COUNTRY_ID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "COUNTRY_ID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "COUNTRY_NAME",
+									"type": "String"
+								},
+								"sink": {
+									"name": "COUNTRY_NAME",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "REGION_ID",
+									"type": "Double"
+								},
+								"sink": {
+									"name": "REGION_ID",
+									"type": "Int32"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_z1n",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_z1n",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Success Email",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Copy_Countries_Oracle_SQLsvr",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://prod-77.westus.logic.azure.com:443/workflows/e048b80d74af46f79a4a98565321f8e4/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=dfuNAasDwxgFnBBYWXRWo0b8kL2pPGiYBcBBYma6n2o",
+					"method": "POST",
+					"body": {
+						"EmailTo": "@{pipeline().parameters.EmailTo}",
+						"Subject": "@{pipeline().Pipeline} job succeeded for COUNTRIES table",
+						"DataFactoryName": "@{pipeline().DataFactory}",
+						"PipelineName": "@{pipeline().Pipeline}",
+						"ErrorMessage": "@{activity('Copy_Countries_Oracle_SQLsvr').output.errors}",
+						"Tablename": "COUNTRIES",
+						"RowsRead": "@{activity('Copy_Countries_Oracle_SQLsvr').output.rowsRead}",
+						"RowsWritten": "@{activity('Copy_Countries_Oracle_SQLsvr').output.rowsCopied}"
+					}
+				}
+			},
+			{
+				"name": "Failure Email",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Copy_Countries_Oracle_SQLsvr",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://prod-77.westus.logic.azure.com:443/workflows/e048b80d74af46f79a4a98565321f8e4/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=dfuNAasDwxgFnBBYWXRWo0b8kL2pPGiYBcBBYma6n2o",
+					"method": "POST",
+					"body": {
+						"EmailTo": "@{pipeline().parameters.EmailTo}",
+						"Subject": "@{pipeline().Pipeline} job Failed for COUNTRIES table",
+						"DataFactoryName": "@{pipeline().DataFactory}",
+						"PipelineName": "@{pipeline().Pipeline}",
+						"ErrorMessage": "@{activity('Copy_Countries_Oracle_SQLsvr').output.errors}",
+						"Tablename": "COUNTRIES",
+						"RowsRead": "@{activity('Copy_Countries_Oracle_SQLsvr').output.rowsRead}",
+						"RowsWritten": "@{activity('Copy_Countries_Oracle_SQLsvr').output.rowsCopied}"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"EmailTo": {
+				"type": "string",
+				"defaultValue": "Raja.Nandam@Kp.org"
+			}
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

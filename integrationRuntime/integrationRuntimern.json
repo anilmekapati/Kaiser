@@ -1,0 +1,6 @@
+{
+	"name": "integrationRuntimern",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}

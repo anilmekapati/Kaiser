@@ -1,0 +1,22 @@
+{
+	"name": "test_Oracle",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "Oracle",
+		"typeProperties": {
+			"connectionString": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "KP_ADF_AzureKeyVault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "orace"
+			}
+		},
+		"connectVia": {
+			"referenceName": "Self-hosted-integrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

@@ -1,0 +1,25 @@
+{
+	"name": "SourceDataset_kmu",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "KP_ADF_OnPrem_Oracle_RN",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"cw_table": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "OracleTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "HR",
+			"table": {
+				"value": "@dataset().cw_table",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

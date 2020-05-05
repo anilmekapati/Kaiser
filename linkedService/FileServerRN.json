@@ -1,0 +1,17 @@
+{
+	"name": "FileServerRN",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "FileServer",
+		"typeProperties": {
+			"host": "//DESKTOP-U1SGSEM/Azure",
+			"userId": "rnandam@hotmail.com",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI1Zjg0NDE3NS1lZGY2LTQyZmUtOTJlZi0zYjE0ZDQxMGEyMGUiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "integrationRuntimern",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

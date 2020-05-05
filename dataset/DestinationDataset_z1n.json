@@ -1,0 +1,36 @@
+{
+	"name": "DestinationDataset_z1n",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "KP_ADF_AzureSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "COUNTRY_ID",
+				"type": "varchar",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "COUNTRY_NAME",
+				"type": "varchar",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "REGION_ID",
+				"type": "int",
+				"precision": 10,
+				"scale": 0
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "COUNTRIES"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

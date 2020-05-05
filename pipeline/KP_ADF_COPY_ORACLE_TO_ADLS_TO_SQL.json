@@ -1,0 +1,246 @@
+{
+	"name": "KP_ADF_COPY_ORACLE_TO_ADLS_TO_SQL",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy Data Oracle to ADLS",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "OracleSource",
+						"partitionOption": "None",
+						"queryTimeout": "02:00:00"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureDataLakeStoreWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "KP_ADF_OracleTable5",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "KP_ADF_ADLS_ALL_CUSTOMERS",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Copy data ADLS to SQL",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Copy Data Oracle to ADLS",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureDataLakeStoreReadSettings",
+							"recursive": false,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"preCopyScript": {
+							"value": "delete from @{pipeline().parameters.TABLE_NAME};",
+							"type": "Expression"
+						},
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "KP_ADF_ADLS_ALL_CUSTOMERS",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "KP_ADF_AzureSqlTable2",
+						"type": "DatasetReference",
+						"parameters": {
+							"SRC_TBL_NAME": {
+								"value": "@pipeline().parameters.TABLE_NAME",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Stored Procedure1",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Copy data ADLS to SQL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[SP_KP_ADF_LOAD_STATUS]",
+					"storedProcedureParameters": {
+						"BILLABLE_DURATIONUNIT": {
+							"value": {
+								"value": "@activity('Copy data ADLS to SQL').output.billingReference.billableDuration[0].unit",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"BILLABLEDURATION": {
+							"value": {
+								"value": "@activity('Copy data ADLS to SQL').output.billingReference.billableDuration[0].duration",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"CPY_DURATION": {
+							"value": {
+								"value": "@activity('Copy data ADLS to SQL').output.copyDuration",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"DATA_INTG_USED": {
+							"value": {
+								"value": "@activity('Copy data ADLS to SQL').output.usedDataIntegrationUnits",
+								"type": "Expression"
+							},
+							"type": "Int32"
+						},
+						"END_TM": {
+							"value": {
+								"value": "@utcnow()",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ERROR": {
+							"value": {
+								"value": "@activity('Copy data ADLS to SQL').output.errors",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"JOB_DURATION": {
+							"value": {
+								"value": "@activity('Copy data ADLS to SQL').output.executionDetails[0].duration",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"JOB_NM": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"JOB_STATUS": {
+							"value": {
+								"value": "@activity('Copy data ADLS to SQL').output.executionDetails[0].status",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"OBJECT_NM": {
+							"value": {
+								"value": "@pipeline().parameters.TABLE_NAME",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ROW_COPIED": {
+							"value": {
+								"value": "@activity('Copy data ADLS to SQL').output.rowsCopied",
+								"type": "Expression"
+							},
+							"type": "Int32"
+						},
+						"ROW_READ": {
+							"value": {
+								"value": "@activity('Copy data ADLS to SQL').output.rowsRead",
+								"type": "Expression"
+							},
+							"type": "Int32"
+						},
+						"START_TM": {
+							"value": {
+								"value": "@activity('Copy data ADLS to SQL').output.executionDetails[0].start",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"THROUGH_PUT": {
+							"value": {
+								"value": "@activity('Copy data ADLS to SQL').output.throughput",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "KP_ADF_AzureSqlDatabase",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"TABLE_NAME": {
+				"type": "String",
+				"defaultValue": "ALL_CUSTOMERS_COPY"
+			}
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

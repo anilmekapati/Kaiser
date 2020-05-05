@@ -1,0 +1,152 @@
+{
+	"name": "KP_ADF_File_Load_From_Onpremise",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lookup Table Name",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "SELECT TABLE_NAME FROM METADATA_FILE\nWHERE FILE_NAME = '@{pipeline().parameters.File_name}';",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"dataset": {
+						"referenceName": "KP_ADF_AzureSqlTable3",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Lookup Table Name",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "FileServerReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"preCopyScript": {
+							"value": "delete from @{activity('Lookup Table Name').output.firstrow.TABLE_NAME};",
+							"type": "Expression"
+						},
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"enableSkipIncompatibleRow": true,
+					"redirectIncompatibleRowSettings": {
+						"linkedServiceName": {
+							"referenceName": "KP_ADF_AzureBlobStorage",
+							"type": "LinkedServiceReference"
+						},
+						"path": "kp-errors"
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "KP_ADF_Local_File_System",
+						"type": "DatasetReference",
+						"parameters": {
+							"File_name": {
+								"value": "@{pipeline().parameters.File_name}",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "KP_ADF_AzureSqlTable2",
+						"type": "DatasetReference",
+						"parameters": {
+							"SRC_TBL_NAME": {
+								"value": "@activity('Lookup Table Name').output.firstrow.TABLE_NAME",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Success Email",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Copy data1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://prod-77.westus.logic.azure.com:443/workflows/e048b80d74af46f79a4a98565321f8e4/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=dfuNAasDwxgFnBBYWXRWo0b8kL2pPGiYBcBBYma6n2o",
+					"method": "POST",
+					"body": {
+						"EmailTo": "@{pipeline().parameters.EmailTo}",
+						"Subject": "@{pipeline().Pipeline} job succeeded for @{pipeline().parameters.File_name} File",
+						"DataFactoryName": "@{pipeline().DataFactory}",
+						"PipelineName": "@{pipeline().Pipeline}",
+						"ErrorMessage": "@{activity('Copy data1').output.errors}",
+						"Tablename": "Target Table Name @{activity('Lookup Table Name').output.firstrow.TABLE_NAME}",
+						"RowsRead": "@{activity('Copy data1').output.rowsRead}",
+						"RowsWritten": "@{activity('Copy data1').output.rowsCopied}"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"File_name": {
+				"type": "String"
+			},
+			"EmailTo": {
+				"type": "string"
+			}
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

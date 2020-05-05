@@ -1,0 +1,13 @@
+{
+	"name": "KP_ADF_OracleTable2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "KP_ADF_Onpremise_Oracle",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "OracleTable",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

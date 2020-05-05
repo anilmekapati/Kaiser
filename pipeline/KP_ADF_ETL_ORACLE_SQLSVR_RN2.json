@@ -1,0 +1,316 @@
+{
+	"name": "KP_ADF_ETL_ORACLE_SQLSVR_RN2",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach_kmu",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.cw_items",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Copy_Oracle_SQLSVR",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [
+								{
+									"name": "Source",
+									"value": "HR.@{item().source.table}"
+								},
+								{
+									"name": "Destination",
+									"value": "dbo.@{item().destination.table}"
+								}
+							],
+							"typeProperties": {
+								"source": {
+									"type": "OracleSource",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "AzureSqlSink"
+								},
+								"enableStaging": false,
+								"translator": {
+									"value": "@item().copyActivity.translator",
+									"type": "Expression"
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "SourceDataset_kmu",
+									"type": "DatasetReference",
+									"parameters": {
+										"cw_table": "@item().source.table"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DestinationDataset_kmu",
+									"type": "DatasetReference",
+									"parameters": {
+										"cw_table": "@item().destination.table"
+									}
+								}
+							]
+						},
+						{
+							"name": "Success Email",
+							"type": "WebActivity",
+							"dependsOn": [
+								{
+									"activity": "Copy_Oracle_SQLSVR",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": "https://prod-77.westus.logic.azure.com:443/workflows/e048b80d74af46f79a4a98565321f8e4/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=dfuNAasDwxgFnBBYWXRWo0b8kL2pPGiYBcBBYma6n2o",
+								"method": "POST",
+								"body": {
+									"EmailTo": "@{pipeline().parameters.EmailTo}",
+									"Subject": "@{pipeline().Pipeline} job succeeded for table",
+									"DataFactoryName": "@{pipeline().DataFactory}",
+									"PipelineName": "@{pipeline().Pipeline}",
+									"ErrorMessage": "@{activity('Copy_Oracle_SQLSVR').output.errors}",
+									"Tablename": "COUNTRIES",
+									"RowsRead": "@{activity('Copy_Oracle_SQLSVR').output.rowsRead}",
+									"RowsWritten": "@{activity('Copy_Oracle_SQLSVR').output.rowsCopied}"
+								}
+							}
+						},
+						{
+							"name": "Failure Email",
+							"type": "WebActivity",
+							"dependsOn": [
+								{
+									"activity": "Copy_Oracle_SQLSVR",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": "https://prod-77.westus.logic.azure.com:443/workflows/e048b80d74af46f79a4a98565321f8e4/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=dfuNAasDwxgFnBBYWXRWo0b8kL2pPGiYBcBBYma6n2o",
+								"method": "POST",
+								"body": {
+									"EmailTo": "@{pipeline().parameters.EmailTo}",
+									"Subject": "@{pipeline().Pipeline} job failed for table",
+									"DataFactoryName": "@{pipeline().DataFactory}",
+									"PipelineName": "@{pipeline().Pipeline}",
+									"ErrorMessage": "@{activity('Copy_Oracle_SQLSVR').output.errors}",
+									"Tablename": "COUNTRIES",
+									"RowsRead": "@{activity('Copy_Oracle_SQLSVR').output.rowsRead}",
+									"RowsWritten": "@{activity('Copy_Oracle_SQLSVR').output.rowsCopied}"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"cw_items": {
+				"type": "Array",
+				"defaultValue": [
+					{
+						"source": {
+							"table": "EMPLOYEES"
+						},
+						"destination": {
+							"table": "EMPLOYEES_RN"
+						},
+						"copyActivity": {
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "EMPLOYEE_ID",
+											"type": "Decimal"
+										},
+										"sink": {
+											"name": "EMPLOYEE_ID",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "FIRST_NAME",
+											"type": "String"
+										},
+										"sink": {
+											"name": "FIRST_NAME",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "LAST_NAME",
+											"type": "String"
+										},
+										"sink": {
+											"name": "LAST_NAME",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "EMAIL",
+											"type": "String"
+										},
+										"sink": {
+											"name": "EMAIL",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "PHONE_NUMBER",
+											"type": "String"
+										},
+										"sink": {
+											"name": "PHONE_INT",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "HIRE_DATE",
+											"type": "DateTime"
+										},
+										"sink": {
+											"name": "HIRE_DATE",
+											"type": "Date"
+										}
+									},
+									{
+										"source": {
+											"name": "JOB_ID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "JOB_ID",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "SALARY",
+											"type": "Decimal"
+										},
+										"sink": {
+											"name": "SALARY",
+											"type": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"name": "COMMISSION_PCT",
+											"type": "Decimal"
+										},
+										"sink": {
+											"name": "COMMISSION_PCT",
+											"type": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"name": "MANAGER_ID",
+											"type": "Decimal"
+										},
+										"sink": {
+											"name": "MANAGER_ID",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "DEPARTMENT_ID",
+											"type": "Decimal"
+										},
+										"sink": {
+											"name": "DEPARTMENT_ID",
+											"type": "Int32"
+										}
+									}
+								]
+							}
+						}
+					},
+					{
+						"source": {
+							"table": "REGIONS"
+						},
+						"destination": {
+							"table": "REGIONS_RN"
+						},
+						"copyActivity": {
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "REGION_ID",
+											"type": "Double"
+										},
+										"sink": {
+											"name": "REGION_ID",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "REGION_NAME",
+											"type": "String"
+										},
+										"sink": {
+											"name": "REGION_NAME",
+											"type": "String"
+										}
+									}
+								]
+							}
+						}
+					}
+				]
+			},
+			"EmailTo": {
+				"type": "string",
+				"defaultValue": "Raja.Nandam@kp.org"
+			}
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

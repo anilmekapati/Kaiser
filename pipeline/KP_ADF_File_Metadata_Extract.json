@@ -1,0 +1,157 @@
+{
+	"name": "KP_ADF_File_Metadata_Extract",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get Metadata File",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "KP_ADF_Local_File_System",
+						"type": "DatasetReference",
+						"parameters": {
+							"File_name": {
+								"value": "@pipeline().parameters.File_name",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"structure"
+					],
+					"storeSettings": {
+						"type": "FileServerReadSettings",
+						"recursive": true
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
+				}
+			},
+			{
+				"name": "KP_ADF_Load_File_Metadata_BLOB_to_SQL",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "KP_ADF_Load_File_Metadata_to_BLOB",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "KP_ADF_Load_File_Metadata_BLOB_to_SQL",
+						"type": "DataFlowReference",
+						"parameters": {
+							"itemname": {
+								"value": "'@{pipeline().parameters.File_name}'",
+								"type": "Expression"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					}
+				}
+			},
+			{
+				"name": "KP_ADF_Load_File_Metadata_to_BLOB",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Get Metadata File",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "KP_ADF_Load_File_Metadata_to_BLOB",
+						"type": "DataFlowReference",
+						"parameters": {
+							"childitems": {
+								"value": "'@{activity('Get Metadata File').output.structure}'",
+								"type": "Expression"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					}
+				}
+			},
+			{
+				"name": "Success_Mail",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "KP_ADF_Load_File_Metadata_BLOB_to_SQL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://prod-77.westus.logic.azure.com:443/workflows/e048b80d74af46f79a4a98565321f8e4/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=dfuNAasDwxgFnBBYWXRWo0b8kL2pPGiYBcBBYma6n2o",
+					"method": "POST",
+					"body": {
+						"EmailTo": "@{pipeline().parameters.EmailTo}",
+						"Subject": "@{pipeline().Pipeline} job succeeded for @{pipeline().parameters.File_name} File",
+						"DataFactoryName": "@{pipeline().DataFactory}",
+						"PipelineName": "@{pipeline().Pipeline}",
+						"Tablename": "Target Table Name METADATA_INFO ",
+						"RowsRead": "1",
+						"RowsWritten": "@{activity('KP_ADF_Load_File_Metadata_BLOB_to_SQL').output.runStatus.metrics.LoadMetadataInfo.rowsWritten}"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"File_name": {
+				"type": "String"
+			},
+			"EmailTo": {
+				"type": "string"
+			}
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

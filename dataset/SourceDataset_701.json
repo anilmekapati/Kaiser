@@ -1,0 +1,87 @@
+{
+	"name": "SourceDataset_701",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "FileServerRN",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "FileServerLocation",
+				"fileName": "Orders.csv"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Row ID"
+			},
+			{
+				"name": "Order ID"
+			},
+			{
+				"name": "Order Date"
+			},
+			{
+				"name": "Ship Date"
+			},
+			{
+				"name": "Ship Mode"
+			},
+			{
+				"name": "Customer ID"
+			},
+			{
+				"name": "Customer Name"
+			},
+			{
+				"name": "Segment"
+			},
+			{
+				"name": "Country"
+			},
+			{
+				"name": "City"
+			},
+			{
+				"name": "State"
+			},
+			{
+				"name": "Postal Code"
+			},
+			{
+				"name": "Region"
+			},
+			{
+				"name": "Product ID"
+			},
+			{
+				"name": "Category"
+			},
+			{
+				"name": "Sub-Category"
+			},
+			{
+				"name": "Product Name"
+			},
+			{
+				"name": "Sales"
+			},
+			{
+				"name": "Quantity"
+			},
+			{
+				"name": "Discount"
+			},
+			{
+				"name": "Profit"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

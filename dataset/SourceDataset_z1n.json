@@ -1,0 +1,17 @@
+{
+	"name": "SourceDataset_z1n",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "KP_ADF_OnPrem_Oracle_RN",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "OracleTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "HR",
+			"table": "COUNTRIES"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

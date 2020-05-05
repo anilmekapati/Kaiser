@@ -1,0 +1,26 @@
+{
+	"name": "KP_ADF_AzureSqlTable2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "KP_ADF_AzureSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"SRC_TBL_NAME": {
+				"type": "String",
+				"defaultValue": "ONPREM_all_customers_ADLS_SQLDB"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": {
+				"value": "@dataset().SRC_TBL_NAME",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

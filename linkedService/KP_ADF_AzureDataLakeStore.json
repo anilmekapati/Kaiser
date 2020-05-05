@@ -1,0 +1,14 @@
+{
+	"name": "KP_ADF_AzureDataLakeStore",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureDataLakeStore",
+		"typeProperties": {
+			"dataLakeStoreUri": "https://kpadfadls.azuredatalakestore.net/webhdfs/v1",
+			"tenant": "cacaeb3a-d3ad-4649-b523-81e983d9c959",
+			"subscriptionId": "cad3bef1-0270-4b14-8349-11d4b335635b",
+			"resourceGroupName": "KP_ADF_ETL_RG"
+		}
+	}
+}
