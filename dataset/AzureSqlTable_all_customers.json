@@ -1,0 +1,100 @@
+{
+	"name": "AzureSqlTable_all_customers",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "CUSTOMERID",
+				"type": "varchar"
+			},
+			{
+				"name": "CUSTOMERTIER",
+				"type": "varchar"
+			},
+			{
+				"name": "LASTNAME",
+				"type": "varchar"
+			},
+			{
+				"name": "FIRSTNAME",
+				"type": "varchar"
+			},
+			{
+				"name": "COMPANY",
+				"type": "varchar"
+			},
+			{
+				"name": "ADDRESS1",
+				"type": "varchar"
+			},
+			{
+				"name": "ADDRESS2",
+				"type": "varchar"
+			},
+			{
+				"name": "ADDRESS3",
+				"type": "varchar"
+			},
+			{
+				"name": "CITY",
+				"type": "varchar"
+			},
+			{
+				"name": "CITY2",
+				"type": "varchar"
+			},
+			{
+				"name": "STATE",
+				"type": "varchar"
+			},
+			{
+				"name": "ZIP",
+				"type": "varchar"
+			},
+			{
+				"name": "PREFDELIVMETHOD",
+				"type": "varchar"
+			},
+			{
+				"name": "COUNTRY",
+				"type": "varchar"
+			},
+			{
+				"name": "CREATEDATE",
+				"type": "varchar"
+			},
+			{
+				"name": "CURRENCY",
+				"type": "varchar"
+			},
+			{
+				"name": "ORDERAMOUNT",
+				"type": "varchar"
+			},
+			{
+				"name": "STATUS",
+				"type": "varchar"
+			},
+			{
+				"name": "MISCDATE",
+				"type": "varchar"
+			},
+			{
+				"name": "LAST_MODF_DT",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "ALL_CUSTOMERS"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,223 @@
+{
+	"name": "incremental_load_from_oracle",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lookup_old_value",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "select last_loaded_dt from watermark_table where table_name = '@{pipeline().parameters.CONTROL_TBL_NAME}'",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"dataset": {
+						"referenceName": "AzureSqlTable2",
+						"type": "DatasetReference",
+						"parameters": {
+							"SRC_TBL_NAME": {
+								"value": "@pipeline().parameters.TBL_NAME",
+								"type": "Expression"
+							}
+						}
+					}
+				}
+			},
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Lookup_old_value",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "OracleSource",
+						"oracleReaderQuery": {
+							"value": "SELECT * FROM @{pipeline().parameters.TBL_NAME} WHERE LAST_MODF_DT > to_date ( (substr('@{activity('Lookup_old_value').output.firstRow.LAST_LOADED_DT}',1,10) ||' '|| substr('@{activity('Lookup_old_value').output.firstRow.LAST_LOADED_DT}',12)),'yyyy-mm-dd hh24:mi:ss')",
+							"type": "Expression"
+						},
+						"partitionOption": "None",
+						"queryTimeout": "02:00:00"
+					},
+					"sink": {
+						"type": "AzureSqlSink"
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "OracleTable2",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "AzureSqlTable2",
+						"type": "DatasetReference",
+						"parameters": {
+							"SRC_TBL_NAME": {
+								"value": "@pipeline().parameters.TBL_NAME",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Lookup_new_value",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Copy data1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "select max(LAST_MODF_DT) as LAST_MODF_DT from @{pipeline().parameters.TBL_NAME} ",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00"
+					},
+					"dataset": {
+						"referenceName": "AzureSqlTable2",
+						"type": "DatasetReference",
+						"parameters": {
+							"SRC_TBL_NAME": {
+								"value": "@pipeline().parameters.TBL_NAME",
+								"type": "Expression"
+							}
+						}
+					}
+				}
+			},
+			{
+				"name": "Stored Procedure1",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Lookup_new_value",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[usp_write_watermark]",
+					"storedProcedureParameters": {
+						"LastModifiedtime": {
+							"value": {
+								"value": "@{activity('Lookup_new_value').output.firstRow.LAST_MODF_DT}",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"TableName": {
+							"value": {
+								"value": "@pipeline().parameters.TBL_NAME",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Success Email",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Stored Procedure1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://prod-01.southcentralus.logic.azure.com:443/workflows/2ec15406eccb4a9a91cc3083d592043a/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=4uGJ1p_u8rKh8SKaDSpGwLUZhb1ZI9G3gvLBmcgSmMk",
+					"method": "POST",
+					"body": {
+						"EmailTo": "@{pipeline().parameters.EmailTo}",
+						"Subject": "@{pipeline().Pipeline} job succeeded for @{pipeline().parameters.TBL_NAME} table",
+						"DataFactoryName": "@{pipeline().DataFactory}",
+						"PipelineName": "@{pipeline().Pipeline}",
+						"ErrorMessage": "@{activity('Copy data1').output.errors}",
+						"Tablename": "@{pipeline().parameters.TBL_NAME}",
+						"RowsRead": "@{activity('Copy data1').output.rowsRead}",
+						"RowsWritten": "@{activity('Copy data1').output.rowsCopied}"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"CONTROL_TBL_NAME": {
+				"type": "string"
+			},
+			"TBL_NAME": {
+				"type": "string"
+			},
+			"EmailTo": {
+				"type": "string"
+			}
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

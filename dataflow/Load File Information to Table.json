@@ -1,0 +1,38 @@
+{
+	"name": "Load File Information to Table",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "File_Get_metadata",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "SQL_Table_Metadata",
+						"type": "DatasetReference"
+					},
+					"name": "LoadMetadataInfo"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Flatten1"
+				},
+				{
+					"name": "DerivedColumn1"
+				},
+				{
+					"name": "DerivedColumn2"
+				}
+			],
+			"script": "parameters{\n\titemname as string\n}\nsource(output(\n\t\tColumn_1 as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tpartitionBy('hash', 1)) ~> source1\nDerivedColumn1 foldDown(unroll(struct),\n\tmapColumn(\n\t\titemname,\n\t\tcolumnname_datatype = struct\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> Flatten1\nsource1 derive(struct = split(translate(Column_1,'[]{\"',''),'},'),\n\t\titemname = $itemname) ~> DerivedColumn1\nFlatten1 derive(itemname = itemname,\n\t\tcolumn_name = replace(substring(columnname_datatype,1,(instr(columnname_datatype,',')-1)),'name:',''),\n\t\tdata_type = translate(replace(substring(columnname_datatype,(instr(columnname_datatype,',')+1)),'type:',''),'}',''),\n\t\tfile_type = 'FILE') ~> DerivedColumn2\nDerivedColumn2 sink(input(\n\t\tOBJECT_NAME as string,\n\t\tCOLUMN_NAME as string,\n\t\tDATA_TYPE as string,\n\t\tOBJECT_TYPE as string,\n\t\tPRECISION as string,\n\t\tSCALE as string,\n\t\tPUBLIC_TOKEN as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tOBJECT_NAME = itemname,\n\t\tCOLUMN_NAME = column_name,\n\t\tDATA_TYPE = data_type,\n\t\tOBJECT_TYPE = file_type\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> LoadMetadataInfo"
+		}
+	}
+}

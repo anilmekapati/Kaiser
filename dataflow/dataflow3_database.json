@@ -1,0 +1,38 @@
+{
+	"name": "dataflow3_database",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Table_Get_Metadata",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "SQL_Table_Metadata",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Flatten1"
+				},
+				{
+					"name": "DerivedColumn1"
+				},
+				{
+					"name": "DerivedColumn2"
+				}
+			],
+			"script": "parameters{\n\titemname as string\n}\nsource(output(\n\t\tstruct as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> source1\nDerivedColumn1 foldDown(unroll(struct),\n\tmapColumn(\n\t\tcolumnname_datatype = struct\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> Flatten1\nsource1 derive(struct = split(translate(struct,'[]{\"',''),'},')) ~> DerivedColumn1\nFlatten1 derive(columnname = substring((slice( (split(columnname_datatype,',')),1)[1]),(instr( (slice( (split(columnname_datatype,',')),1)[1]),':') +1)),\n\t\tdata_type = substring((slice( (split(columnname_datatype,',')),5)[1]),(instr( (slice( (split(columnname_datatype,',')),5)[1]),':') +1)),\n\t\tprecision = substring((slice( (split(columnname_datatype,',')),6)[1]),(instr( (slice( (split(columnname_datatype,',')),6)[1]),':') +1)),\n\t\tscale = substring((slice( (split(columnname_datatype,',')),7)[1]),(instr( (slice( (split(columnname_datatype,',')),7)[1]),':') +1)),\n\t\tpublictoken = translate( (substring((slice( (split(columnname_datatype,',')),12)[1]),(instr( (slice( (split(columnname_datatype,',')),12)[1]),'=') +1))),'}',''),\n\t\titemname = $itemname,\n\t\tOBJECT_TYPE = 'TABLE') ~> DerivedColumn2\nDerivedColumn2 sink(input(\n\t\tOBJECT_NAME as string,\n\t\tCOLUMN_NAME as string,\n\t\tDATA_TYPE as string,\n\t\tOBJECT_TYPE as string,\n\t\tPRECISION as string,\n\t\tSCALE as string,\n\t\tPUBLIC_TOKEN as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tOBJECT_NAME = itemname,\n\t\tCOLUMN_NAME = columnname,\n\t\tDATA_TYPE = data_type,\n\t\tOBJECT_TYPE,\n\t\tPRECISION = precision,\n\t\tSCALE = scale,\n\t\tPUBLIC_TOKEN = publictoken\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+		}
+	}
+}

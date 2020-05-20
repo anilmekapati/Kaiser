@@ -1,0 +1,32 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Dummysource",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Target_1",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "DerivedColumn1"
+				}
+			],
+			"script": "parameters{\n\trowswritten as integer,\n\trowsread as integer,\n\tmetertype as string,\n\tusedParallelCopies as string,\n\tsource_type as string,\n\tsink_region as string,\n\texecstatus as string,\n\texec_profile_trans_status as string\n}\nsource(output(\n\t\tColumn_1 as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> source1\nsource1 derive(rowsread = $rowsread,\n\t\trowsprocessed = $rowswritten,\n\t\tmeterType = $metertype,\n\t\tusedParallelCopies = $usedParallelCopies,\n\t\texec_source_type = $source_type,\n\t\texec_sink_region = $sink_region,\n\t\texec_status = $execstatus,\n\t\texec_profile_transfer_status = $exec_profile_trans_status) ~> DerivedColumn1\nDerivedColumn1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['runstatus.txt'],\n\tmapColumn(\n\t\trowsread,\n\t\trowsprocessed,\n\t\tmeterType,\n\t\tusedParallelCopies,\n\t\texec_source_type,\n\t\texec_sink_region,\n\t\texec_status,\n\t\texec_profile_transfer_status\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+		}
+	}
+}

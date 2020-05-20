@@ -1,0 +1,19 @@
+{
+	"name": "Test_Json",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Azureblob",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "test.json",
+				"container": "target"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

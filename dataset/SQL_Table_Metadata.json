@@ -1,0 +1,46 @@
+{
+	"name": "SQL_Table_Metadata",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "OBJECT_NAME",
+				"type": "varchar"
+			},
+			{
+				"name": "COLUMN_NAME",
+				"type": "varchar"
+			},
+			{
+				"name": "DATA_TYPE",
+				"type": "varchar"
+			},
+			{
+				"name": "OBJECT_TYPE",
+				"type": "varchar"
+			},
+			{
+				"name": "PRECISION",
+				"type": "varchar"
+			},
+			{
+				"name": "SCALE",
+				"type": "varchar"
+			},
+			{
+				"name": "PUBLIC_TOKEN",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "METADATA_INFO"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

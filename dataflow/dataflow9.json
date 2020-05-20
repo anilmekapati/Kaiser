@@ -1,0 +1,48 @@
+{
+	"name": "dataflow9",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable_source_type1",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable_Target_type1",
+						"type": "DatasetReference"
+					},
+					"name": "source2"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable_Target_type1",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "DerivedColumn1"
+				},
+				{
+					"name": "Exists1"
+				},
+				{
+					"name": "AlterRow1"
+				},
+				{
+					"name": "DerivedColumn2"
+				}
+			],
+			"script": "source(output(\n\t\tCUSTOMERID as string,\n\t\tCUSTOMERREGION as string,\n\t\tCUSTOMERTIER as string,\n\t\tFULLNAME as string,\n\t\tCOMPANY as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> source1\nsource(output(\n\t\tCUSTOMERID as string,\n\t\tCUSTOMERREGION as string,\n\t\tCUSTOMERTIER as string,\n\t\tFULLNAME as string,\n\t\tCOMPANY as string,\n\t\tINSERT_TS as timestamp,\n\t\tUPDATE_TS as timestamp,\n\t\tMD5 as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> source2\nsource1 derive(MD5 = sha1(CUSTOMERREGION,CUSTOMERTIER,FULLNAME,COMPANY)) ~> DerivedColumn1\nDerivedColumn1, source2 exists(DerivedColumn1@MD5 == source2@MD5,\n\tnegate:true,\n\tbroadcast: 'auto')~> Exists1\nDerivedColumn2 alterRow(upsertIf(true())) ~> AlterRow1\nExists1 derive(TS = currentTimestamp(),\n\t\tUPD_TS = currentTimestamp()) ~> DerivedColumn2\nAlterRow1 sink(input(\n\t\tCUSTOMERID as string,\n\t\tCUSTOMERREGION as string,\n\t\tCUSTOMERTIER as string,\n\t\tFULLNAME as string,\n\t\tCOMPANY as string,\n\t\tINSERT_TS as timestamp,\n\t\tUPDATE_TS as timestamp,\n\t\tMD5 as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:false,\n\tupsertable:true,\n\tkeys:['CUSTOMERID'],\n\tformat: 'table',\n\tmapColumn(\n\t\tCUSTOMERID,\n\t\tCUSTOMERREGION,\n\t\tCUSTOMERTIER,\n\t\tFULLNAME,\n\t\tCOMPANY,\n\t\tINSERT_TS = TS,\n\t\tUPDATE_TS = UPD_TS,\n\t\tMD5\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+		}
+	}
+}

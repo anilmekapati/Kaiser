@@ -1,0 +1,20 @@
+{
+	"name": "la_customers_orc",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Azureblob",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Orc",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "LA_CUSTOMERS.orc",
+				"container": "target"
+			}
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

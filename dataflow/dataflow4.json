@@ -1,0 +1,32 @@
+{
+	"name": "dataflow4",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Test_Json",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "JSON_Text_DelimitedText",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "DerivedColumn1"
+				}
+			],
+			"script": "source(output(\n\t\tLA_CUSTOMERS as (Fullname as string, ID as integer, Region as string, Tier as string)\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> source1\nsource1 derive(LA_CUSTOMERS = LA_CUSTOMERS.ID,\n\t\tID = LA_CUSTOMERS.ID,\n\t\tRegion = LA_CUSTOMERS.Region,\n\t\tTier = LA_CUSTOMERS.Tier,\n\t\tName = LA_CUSTOMERS.Fullname) ~> DerivedColumn1\nDerivedColumn1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['json_text_file'],\n\tmapColumn(\n\t\tID,\n\t\tRegion,\n\t\tTier,\n\t\tName\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+		}
+	}
+}

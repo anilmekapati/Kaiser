@@ -1,0 +1,127 @@
+{
+	"name": "onprim_to_blob",
+	"properties": {
+		"activities": [
+			{
+				"name": "onprimese",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "FileServerReadSettings",
+							"recursive": true,
+							"wildcardFileName": "*",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "onprim",
+						"type": "DatasetReference",
+						"parameters": {
+							"File_name": {
+								"value": "@pipeline().parameters.File_Name",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Target_1",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Failure Email",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "onprimese",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "send email on failure",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"EmailTo": "anil_mekapati@yahoo.com",
+						"Activity": "onprimese",
+						"ErrorMessage": {
+							"value": "@activity('onprimese').Error.Message",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "success email",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "onprimese",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "send email on failure",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"EmailTo": "anil_mekapati@yahoo.com",
+						"Activity": "onprimese",
+						"ErrorMessage": {
+							"value": "@activity('onprimese').Status",
+							"type": "Expression"
+						}
+					}
+				}
+			}
+		],
+		"parameters": {
+			"File_Name": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

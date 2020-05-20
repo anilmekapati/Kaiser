@@ -1,36 +1,27 @@
 {
-	"name": "Json1",
+	"name": "Sink_File_Get_Metadata",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "Azureblob",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
-		"type": "Json",
+		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "output.json",
 				"container": "anil-container-1"
-			}
+			},
+			"columnDelimiter": "|",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
 		},
-		"schema": {
-			"type": "object",
-			"properties": {
-				"struct": {
-					"type": "string"
-				},
-				"size": {
-					"type": "integer"
-				},
-				"itemname": {
-					"type": "string"
-				},
-				"lastmoddate": {
-					"type": "string"
-				}
+		"schema": [
+			{
+				"type": "String"
 			}
-		}
+		]
 	},
 	"type": "Microsoft.DataFactory/factories/datasets"
 }

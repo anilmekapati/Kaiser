@@ -1,36 +1,28 @@
 {
-	"name": "Json1",
+	"name": "File_Get_metadata",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "Azureblob",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
-		"type": "Json",
+		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "output.json",
+				"fileName": "output.txt",
 				"container": "anil-container-1"
-			}
+			},
+			"columnDelimiter": "|",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
 		},
-		"schema": {
-			"type": "object",
-			"properties": {
-				"struct": {
-					"type": "string"
-				},
-				"size": {
-					"type": "integer"
-				},
-				"itemname": {
-					"type": "string"
-				},
-				"lastmoddate": {
-					"type": "string"
-				}
+		"schema": [
+			{
+				"type": "String"
 			}
-		}
+		]
 	},
 	"type": "Microsoft.DataFactory/factories/datasets"
 }

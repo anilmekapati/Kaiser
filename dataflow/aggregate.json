@@ -1,0 +1,32 @@
+{
+	"name": "aggregate",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "src_la_customers",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Target_1",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Aggregate1"
+				}
+			],
+			"script": "source(output(\n\t\tCustomerID as string,\n\t\t{Customer Region} as string,\n\t\tCustomerTier as string,\n\t\tFullName as string,\n\t\tCompany as string,\n\t\tAddress1 as string,\n\t\tAddress2 as string,\n\t\tAddress3 as string,\n\t\tCity as string,\n\t\tCity2 as string,\n\t\tState as string,\n\t\tZip as string,\n\t\tPrefDelivMethod as string,\n\t\tCountry as string,\n\t\tCreateDate as string,\n\t\tCurrency as string,\n\t\tOrderAmount as integer,\n\t\tStatus as string,\n\t\tMiscDate as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tlimit: 100,\n\tinferDriftedColumnTypes: true,\n\tpartitionBy('hash', 2,\n\t\tCustomerTier\n\t)) ~> source1\nsource1 aggregate(groupBy(CustomerTier = CustomerTier),\n\ttotal_order_amount = round(sum(OrderAmount),2),\n\t\teach(match(!in(['CustomerTier'],name)), $$ = first($$))) ~> Aggregate1\nAggregate1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tfilePattern:'customertier[n].txt',\n\tpartitionBy('hash', 2,\n\t\tERROR_FUNCTION('')\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+		}
+	}
+}

@@ -1,0 +1,54 @@
+{
+	"name": "dataflow9_copy1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable_source_type1",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable_type2",
+						"type": "DatasetReference"
+					},
+					"name": "source2"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable_Target_type1",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "DerivedColumn1"
+				},
+				{
+					"name": "Exists1"
+				},
+				{
+					"name": "AlterRow1"
+				},
+				{
+					"name": "DerivedColumn2"
+				},
+				{
+					"name": "Filter1"
+				},
+				{
+					"name": "Lookup1"
+				}
+			],
+			"script": "source(output(\n\t\tCUSTOMERID as string,\n\t\tCUSTOMERREGION as string,\n\t\tCUSTOMERTIER as string,\n\t\tFULLNAME as string,\n\t\tCOMPANY as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> source1\nsource(output(\n\t\tCUSTOMERID as string,\n\t\tCUSTOMERREGION as string,\n\t\tCUSTOMERTIER as string,\n\t\tFULLNAME as string,\n\t\tCOMPANY as string,\n\t\tETL_START_DT as timestamp,\n\t\tETL_END_DT as timestamp,\n\t\tMOST_RCNT_IN_FLG as string,\n\t\tMD5 as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> source2\nsource1 derive(MD5 = sha1(CUSTOMERREGION,CUSTOMERTIER,FULLNAME,COMPANY)) ~> DerivedColumn1\nDerivedColumn1, Filter1 exists(DerivedColumn1@MD5 == source2@MD5,\n\tnegate:true,\n\tbroadcast: 'auto')~> Exists1\nDerivedColumn2 alterRow(upsertIf(true())) ~> AlterRow1\nLookup1 derive(TS = currentTimestamp(),\n\t\tUPD_TS = currentTimestamp(),\n\t\tinsert_update = iif(isNull(source2@CUSTOMERID), 'INSERT','UPDATE')) ~> DerivedColumn2\nsource2 filter(MOST_RCNT_IN_FLG == 'Y') ~> Filter1\nExists1, Filter1 lookup(source1@CUSTOMERID == source2@CUSTOMERID,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> Lookup1\nAlterRow1 sink(input(\n\t\tCUSTOMERID as string,\n\t\tCUSTOMERREGION as string,\n\t\tCUSTOMERTIER as string,\n\t\tFULLNAME as string,\n\t\tCOMPANY as string,\n\t\tINSERT_TS as timestamp,\n\t\tUPDATE_TS as timestamp,\n\t\tMD5 as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:false,\n\tupsertable:true,\n\tkeys:['CUSTOMERID'],\n\tformat: 'table',\n\tmapColumn(\n\t\tCUSTOMERID = {source1@CUSTOMERID},\n\t\tCUSTOMERREGION = {source1@CUSTOMERREGION},\n\t\tCUSTOMERTIER = {source1@CUSTOMERTIER},\n\t\tFULLNAME = {source1@FULLNAME},\n\t\tCOMPANY = {source1@COMPANY},\n\t\tINSERT_TS = TS,\n\t\tUPDATE_TS = UPD_TS,\n\t\tMD5 = {DerivedColumn1@MD5}\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+		}
+	}
+}

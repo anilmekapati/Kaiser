@@ -1,16 +1,15 @@
 {
-	"name": "OracleTable1",
+	"name": "AzureTable1",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "Oracle_linked_onprim",
+			"referenceName": "AzureTableStorage1",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
-		"type": "OracleTable",
+		"type": "AzureTable",
 		"schema": [],
 		"typeProperties": {
-			"schema": "ANIL",
-			"table": "SAMPLE"
+			"tableName": "azuresample"
 		}
 	},
 	"type": "Microsoft.DataFactory/factories/datasets"

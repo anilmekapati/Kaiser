@@ -1,0 +1,54 @@
+{
+	"name": "AzureSqlTable_Target_type1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "CUSTOMERID",
+				"type": "varchar"
+			},
+			{
+				"name": "CUSTOMERREGION",
+				"type": "varchar"
+			},
+			{
+				"name": "CUSTOMERTIER",
+				"type": "varchar"
+			},
+			{
+				"name": "FULLNAME",
+				"type": "varchar"
+			},
+			{
+				"name": "COMPANY",
+				"type": "varchar"
+			},
+			{
+				"name": "INSERT_TS",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "UPDATE_TS",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "MD5",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "LA_CUSTOMERS_TARGET_TYPE1"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

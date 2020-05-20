@@ -1,0 +1,118 @@
+{
+	"name": "Copy data File to SQL",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "FileServerReadSettings",
+							"recursive": false,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink"
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "onprim",
+						"type": "DatasetReference",
+						"parameters": {
+							"File_name": "orders.csv"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "AzureSqlTable2",
+						"type": "DatasetReference",
+						"parameters": {
+							"SRC_TBL_NAME": {
+								"value": "@pipeline().parameters.TABLE_NAME",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "If Condition",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Copy data1",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@less(activity('Copy data1').output.rowsRead,activity('Copy data1').output.rowsCopied)",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Web1",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": "https://prod-01.southcentralus.logic.azure.com:443/workflows/2ec15406eccb4a9a91cc3083d592043a/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=4uGJ1p_u8rKh8SKaDSpGwLUZhb1ZI9G3gvLBmcgSmMk",
+								"method": "POST",
+								"body": {
+									"EmailTo": "@{pipeline().parameters.EmailTo}",
+									"Subject": "@{pipeline().Pipeline} job failed for @{pipeline().parameters.TABLE_NAME} table",
+									"DataFactoryName": "@{pipeline().DataFactory}",
+									"PipelineName": "@{pipeline().Pipeline}",
+									"ErrorMessage": "@{activity('Copy data1').output.errors}",
+									"Tablename": "@{pipeline().parameters.TABLE_NAME}",
+									"RowsRead": "@{activity('Copy data1').output.rowsRead}",
+									"RowsWritten": "@{activity('Copy data1').output.rowsCopied}"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"TABLE_NAME": {
+				"type": "String",
+				"defaultValue": "ORDERS_COPY"
+			},
+			"EmailTo": {
+				"type": "string",
+				"defaultValue": "anil_mekapati@yahoo.com"
+			}
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

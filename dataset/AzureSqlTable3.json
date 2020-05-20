@@ -1,0 +1,31 @@
+{
+	"name": "AzureSqlTable3",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"SQL_SCHEMA": {
+				"type": "String"
+			},
+			"SQL_TABLE_NAME": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().SQL_SCHEMA",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().SQL_SCHEMA",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

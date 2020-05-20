@@ -1,0 +1,14 @@
+{
+	"name": "AzureDataLakeStore1",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureDataLakeStore",
+		"typeProperties": {
+			"dataLakeStoreUri": "https://anilazuredl.azuredatalakestore.net/webhdfs/v1",
+			"tenant": "e2d3da44-4e9a-42c7-8ec7-b401b05866ba",
+			"subscriptionId": "84889d17-fc78-4be6-ad94-e6c07bd64670",
+			"resourceGroupName": "Anil-Azure-Practise"
+		}
+	}
+}

@@ -1,0 +1,114 @@
+{
+	"name": "Database_Metadata_Extract",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get Metadata1",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "AzureSqlTable2",
+						"type": "DatasetReference",
+						"parameters": {
+							"SRC_TBL_NAME": {
+								"value": "@pipeline().parameters.TABLE_NAME",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"structure"
+					]
+				}
+			},
+			{
+				"name": "dataflow2_database",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Get Metadata1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "dataflow2_database",
+						"type": "DataFlowReference",
+						"parameters": {
+							"childitems": {
+								"value": "'@{activity('Get Metadata1').output.structure}'",
+								"type": "Expression"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					}
+				}
+			},
+			{
+				"name": "dataflow3_database",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "dataflow2_database",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "dataflow3_database",
+						"type": "DataFlowReference",
+						"parameters": {
+							"itemname": {
+								"value": "'@{pipeline().parameters.TABLE_NAME}'",
+								"type": "Expression"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"TABLE_NAME": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

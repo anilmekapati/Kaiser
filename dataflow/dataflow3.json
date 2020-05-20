@@ -1,0 +1,32 @@
+{
+	"name": "dataflow3",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "BLOB_LA_Customers",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Test_Json",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "DerivedColumn1"
+				}
+			],
+			"script": "source(output(\n\t\tCustomerID as integer,\n\t\tCustomerRegion as string,\n\t\tCustomerTier as string,\n\t\tFullName as string,\n\t\tCompany as string,\n\t\tAddress1 as string,\n\t\tAddress2 as string,\n\t\tAddress3 as string,\n\t\tCity as string,\n\t\tCity2 as string,\n\t\tState as string,\n\t\tZip as string,\n\t\tPrefDelivMethod as string,\n\t\tCountry as string,\n\t\tCreateDate as string,\n\t\tCurrency as string,\n\t\tOrderAmount as integer,\n\t\tStatus as string,\n\t\tMiscDate as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false) ~> source1\nsource1 derive(LA_CUSTOMERS = @(ID=CustomerID,\n\t\tTier=CustomerTier,\n\t\tFullname=FullName,\n\t\tRegion=CustomerRegion)) ~> DerivedColumn1\nDerivedColumn1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['test.json'],\n\tmapColumn(\n\t\tLA_CUSTOMERS\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+		}
+	}
+}

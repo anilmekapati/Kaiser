@@ -1,0 +1,142 @@
+{
+	"name": "Oracle_to_blob",
+	"properties": {
+		"activities": [
+			{
+				"name": "oracle_to_blob",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "OracleSource",
+						"partitionOption": "None",
+						"queryTimeout": "02:00:00"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "ID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CUSTOMER",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CUSTOMER",
+									"type": "String"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "OracleTable1",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Target_1",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "dataflow1",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "oracle_to_blob",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "dataflow1",
+						"type": "DataFlowReference",
+						"parameters": {
+							"rowswritten": {
+								"value": "@activity('oracle_to_blob').output.rowsRead",
+								"type": "Expression"
+							},
+							"rowsread": {
+								"value": "@activity('oracle_to_blob').output.rowsCopied",
+								"type": "Expression"
+							},
+							"metertype": {
+								"value": "'@{activity('oracle_to_blob').output.billingReference.billableDuration[0].meterType}'",
+								"type": "Expression"
+							},
+							"usedParallelCopies": {
+								"value": "'@{activity('oracle_to_blob').output.usedParallelCopies}'",
+								"type": "Expression"
+							},
+							"source_type": {
+								"value": "'@{activity('oracle_to_blob').output.executionDetails[0].source.type}'",
+								"type": "Expression"
+							},
+							"sink_region": {
+								"value": "'@{activity('oracle_to_blob').output.executionDetails[0].sink.region}'",
+								"type": "Expression"
+							},
+							"execstatus": {
+								"value": "'@{activity('oracle_to_blob').output.executionDetails[0].status}'",
+								"type": "Expression"
+							},
+							"exec_profile_trans_status": {
+								"value": "'@{activity('oracle_to_blob').output.executionDetails[0].profile.transfer.status}'",
+								"type": "Expression"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					}
+				}
+			}
+		],
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

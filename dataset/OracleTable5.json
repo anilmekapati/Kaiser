@@ -1,5 +1,5 @@
 {
-	"name": "OracleTable1",
+	"name": "OracleTable5",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "Oracle_linked_onprim",
@@ -10,7 +10,7 @@
 		"schema": [],
 		"typeProperties": {
 			"schema": "ANIL",
-			"table": "SAMPLE"
+			"table": "ALL_CUSTOMERS"
 		}
 	},
 	"type": "Microsoft.DataFactory/factories/datasets"
