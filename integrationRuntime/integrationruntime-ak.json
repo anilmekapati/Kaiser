@@ -1,7 +1,0 @@
-{
-	"name": "integrationruntime-ak",
-	"properties": {
-		"type": "SelfHosted",
-		"description": "Integration Run Time to Connect to Alaka K local files on the desktop"
-	}
-}
