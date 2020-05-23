@@ -17,11 +17,17 @@
 		"schema": {
 			"type": "object",
 			"properties": {
+				"odata.context": {
+					"type": "string"
+				},
 				"value": {
 					"type": "array",
 					"items": {
 						"type": "object",
 						"properties": {
+							"odata.etag": {
+								"type": "string"
+							},
 							"customertypecode": {
 								"type": "integer"
 							},
