@@ -1,0 +1,844 @@
+{
+	"name": "Json3",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ln_AzureBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "Test.json",
+				"container": "kp-source"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"@odata.context": {
+					"type": "string"
+				},
+				"value": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"@odata.etag": {
+								"type": "string"
+							},
+							"customertypecode": {
+								"type": "integer"
+							},
+							"fullname": {
+								"type": "string"
+							},
+							"address2_addresstypecode": {
+								"type": "integer"
+							},
+							"merged": {
+								"type": "boolean"
+							},
+							"kp_medicarepartbstartdate": {
+								"type": "string"
+							},
+							"gendercode": {
+								"type": "integer"
+							},
+							"_modifiedby_value": {
+								"type": "string"
+							},
+							"territorycode": {
+								"type": "integer"
+							},
+							"haschildrencode": {
+								"type": "integer"
+							},
+							"preferredappointmenttimecode": {
+								"type": "integer"
+							},
+							"kp_primaryaddresstype": {
+								"type": "integer"
+							},
+							"address1_composite": {
+								"type": "string"
+							},
+							"address2_city": {
+								"type": "string"
+							},
+							"kp_medicareeligibilityreason": {
+								"type": "string"
+							},
+							"kp_fullnamecalculated": {
+								"type": "string"
+							},
+							"isbackofficecustomer": {
+								"type": "boolean"
+							},
+							"modifiedon": {
+								"type": "string"
+							},
+							"_owninguser_value": {
+								"type": "string"
+							},
+							"address2_line1": {
+								"type": "string"
+							},
+							"kp_medicarepartdentitlement": {
+								"type": "boolean"
+							},
+							"lastname": {
+								"type": "string"
+							},
+							"_kp_regionid_value": {
+								"type": "string"
+							},
+							"kp_contacttype": {
+								"type": "integer"
+							},
+							"kp_medicarepartaentitlement": {
+								"type": "boolean"
+							},
+							"marketingonly": {
+								"type": "boolean"
+							},
+							"donotphone": {
+								"type": "boolean"
+							},
+							"preferredcontactmethodcode": {
+								"type": "integer"
+							},
+							"educationcode": {
+								"type": "integer"
+							},
+							"_ownerid_value": {
+								"type": "string"
+							},
+							"kp_secondaryaddresstype": {
+								"type": "integer"
+							},
+							"customersizecode": {
+								"type": "integer"
+							},
+							"firstname": {
+								"type": "string"
+							},
+							"address1_stateorprovince": {
+								"type": "string"
+							},
+							"kp_issecondaryaddressinvalid": {
+								"type": "boolean"
+							},
+							"donotpostalmail": {
+								"type": "boolean"
+							},
+							"yomifullname": {
+								"type": "string"
+							},
+							"kp_medicareenrollmentstatus": {
+								"type": "string"
+							},
+							"donotemail": {
+								"type": "boolean"
+							},
+							"kp_totalactivemedicalcoverages": {
+								"type": "integer"
+							},
+							"middlename": {
+								"type": "string"
+							},
+							"_kp_preferredlanguagespokenid_value": {
+								"type": "string"
+							},
+							"timezoneruleversionnumber": {
+								"type": "integer"
+							},
+							"address1_addressid": {
+								"type": "string"
+							},
+							"address2_freighttermscode": {
+								"type": "integer"
+							},
+							"statuscode": {
+								"type": "integer"
+							},
+							"createdon": {
+								"type": "string"
+							},
+							"kp_medicarepartastartdate": {
+								"type": "string"
+							},
+							"kp_secondaryaddressbegindate": {
+								"type": "string"
+							},
+							"kp_mrn": {
+								"type": "string"
+							},
+							"donotsendmm": {
+								"type": "boolean"
+							},
+							"donotfax": {
+								"type": "boolean"
+							},
+							"kp_medicareplan": {
+								"type": "string"
+							},
+							"kp_confidentialaddresstype": {
+								"type": "integer"
+							},
+							"kp_isdecisionmaker": {
+								"type": "boolean"
+							},
+							"leadsourcecode": {
+								"type": "integer"
+							},
+							"kp_memberprimaryphone": {
+								"type": "string"
+							},
+							"address1_country": {
+								"type": "string"
+							},
+							"versionnumber": {
+								"type": "integer"
+							},
+							"address1_line1": {
+								"type": "string"
+							},
+							"birthdate": {
+								"type": "string"
+							},
+							"telephone2": {
+								"type": "string"
+							},
+							"telephone1": {
+								"type": "string"
+							},
+							"kp_region": {
+								"type": "integer"
+							},
+							"_owningbusinessunit_value": {
+								"type": "string"
+							},
+							"_kp_preferredlanguagewrittenid_value": {
+								"type": "string"
+							},
+							"address3_addressid": {
+								"type": "string"
+							},
+							"address2_postalcode": {
+								"type": "string"
+							},
+							"address1_addresstypecode": {
+								"type": "integer"
+							},
+							"donotbulkemail": {
+								"type": "boolean"
+							},
+							"creditonhold": {
+								"type": "boolean"
+							},
+							"address2_shippingmethodcode": {
+								"type": "integer"
+							},
+							"followemail": {
+								"type": "boolean"
+							},
+							"shippingmethodcode": {
+								"type": "integer"
+							},
+							"address2_stateorprovince": {
+								"type": "string"
+							},
+							"_createdby_value": {
+								"type": "string"
+							},
+							"address1_city": {
+								"type": "string"
+							},
+							"donotbulkpostalmail": {
+								"type": "boolean"
+							},
+							"kp_ismultiplecoverages": {
+								"type": "boolean"
+							},
+							"kp_isprimaryaddressinvalid": {
+								"type": "boolean"
+							},
+							"kp_primaryaddressbegindate": {
+								"type": "string"
+							},
+							"contactid": {
+								"type": "string"
+							},
+							"kp_kaiserplanstartdate": {
+								"type": "string"
+							},
+							"address2_composite": {
+								"type": "string"
+							},
+							"kp_medicarepartbentitlement": {
+								"type": "boolean"
+							},
+							"participatesinworkflow": {
+								"type": "boolean"
+							},
+							"statecode": {
+								"type": "integer"
+							},
+							"_modifiedonbehalfby_value": {
+								"type": "string"
+							},
+							"address2_addressid": {
+								"type": "string"
+							},
+							"address1_postalcode": {
+								"type": "string"
+							},
+							"address2_country": {
+								"type": "string"
+							},
+							"kp_socialsecuritynumber": {
+								"type": "string"
+							},
+							"kp_isinterpreter": {
+								"type": "boolean"
+							},
+							"kp_isirfyacontact": {
+								"type": "boolean"
+							},
+							"timespentbymeonemailandmeetings": {
+								"type": "null"
+							},
+							"fax": {
+								"type": "null"
+							},
+							"address2_name": {
+								"type": "null"
+							},
+							"kp_secondaryaddressenddate": {
+								"type": "null"
+							},
+							"address3_line3": {
+								"type": "null"
+							},
+							"address1_county": {
+								"type": "null"
+							},
+							"address1_upszone": {
+								"type": "null"
+							},
+							"_preferredequipmentid_value": {
+								"type": "null"
+							},
+							"kp_contactdatabasenotes": {
+								"type": "null"
+							},
+							"_transactioncurrencyid_value": {
+								"type": "null"
+							},
+							"preferredappointmentdaycode": {
+								"type": "null"
+							},
+							"stageid": {
+								"type": "null"
+							},
+							"exchangerate": {
+								"type": "null"
+							},
+							"kp_internalsynopsistomember": {
+								"type": "null"
+							},
+							"address3_postalcode": {
+								"type": "null"
+							},
+							"familystatuscode": {
+								"type": "null"
+							},
+							"address2_county": {
+								"type": "null"
+							},
+							"address2_latitude": {
+								"type": "null"
+							},
+							"kp_internalsynopsisadddetails": {
+								"type": "null"
+							},
+							"yomimiddlename": {
+								"type": "null"
+							},
+							"kp_confidentialzip": {
+								"type": "null"
+							},
+							"subscriptionid": {
+								"type": "null"
+							},
+							"address3_line2": {
+								"type": "null"
+							},
+							"address2_telephone2": {
+								"type": "null"
+							},
+							"kp_isadcreated": {
+								"type": "null"
+							},
+							"entityimage": {
+								"type": "null"
+							},
+							"kp_confidentialstate": {
+								"type": "null"
+							},
+							"kp_providerid": {
+								"type": "null"
+							},
+							"kp_diffindays": {
+								"type": "null"
+							},
+							"paymenttermscode": {
+								"type": "null"
+							},
+							"kp_confidentialzip5": {
+								"type": "null"
+							},
+							"kp_medicarepartaenddate": {
+								"type": "null"
+							},
+							"mobilephone": {
+								"type": "null"
+							},
+							"address3_telephone3": {
+								"type": "null"
+							},
+							"traversedpath": {
+								"type": "null"
+							},
+							"aging60": {
+								"type": "null"
+							},
+							"address3_shippingmethodcode": {
+								"type": "null"
+							},
+							"anniversary": {
+								"type": "null"
+							},
+							"address3_telephone2": {
+								"type": "null"
+							},
+							"address3_postofficebox": {
+								"type": "null"
+							},
+							"address1_telephone2": {
+								"type": "null"
+							},
+							"employeeid": {
+								"type": "null"
+							},
+							"aging30_base": {
+								"type": "null"
+							},
+							"address2_primarycontactname": {
+								"type": "null"
+							},
+							"spousesname": {
+								"type": "null"
+							},
+							"kp_dobinthisyear": {
+								"type": "null"
+							},
+							"address3_longitude": {
+								"type": "null"
+							},
+							"address2_postofficebox": {
+								"type": "null"
+							},
+							"kp_allcredentials": {
+								"type": "null"
+							},
+							"ftpsiteurl": {
+								"type": "null"
+							},
+							"salutation": {
+								"type": "null"
+							},
+							"aging30": {
+								"type": "null"
+							},
+							"address1_latitude": {
+								"type": "null"
+							},
+							"address3_freighttermscode": {
+								"type": "null"
+							},
+							"address1_utcoffset": {
+								"type": "null"
+							},
+							"suffix": {
+								"type": "null"
+							},
+							"_slaid_value": {
+								"type": "null"
+							},
+							"description": {
+								"type": "null"
+							},
+							"address2_longitude": {
+								"type": "null"
+							},
+							"department": {
+								"type": "null"
+							},
+							"numberofchildren": {
+								"type": "null"
+							},
+							"aging90": {
+								"type": "null"
+							},
+							"kp_hic": {
+								"type": "null"
+							},
+							"_parentcustomerid_value": {
+								"type": "null"
+							},
+							"kp_tieline": {
+								"type": "null"
+							},
+							"emailaddress1": {
+								"type": "null"
+							},
+							"address3_county": {
+								"type": "null"
+							},
+							"jobtitle": {
+								"type": "null"
+							},
+							"nickname": {
+								"type": "null"
+							},
+							"websiteurl": {
+								"type": "null"
+							},
+							"address3_city": {
+								"type": "null"
+							},
+							"assistantphone": {
+								"type": "null"
+							},
+							"kp_writtenlanguagetext": {
+								"type": "null"
+							},
+							"entityimage_timestamp": {
+								"type": "null"
+							},
+							"kp_confidentialbegindate": {
+								"type": "null"
+							},
+							"_owningteam_value": {
+								"type": "null"
+							},
+							"kp_kaiserplanstopdate": {
+								"type": "null"
+							},
+							"kp_eligibilityreason": {
+								"type": "null"
+							},
+							"address3_primarycontactname": {
+								"type": "null"
+							},
+							"company": {
+								"type": "null"
+							},
+							"address3_line1": {
+								"type": "null"
+							},
+							"address1_name": {
+								"type": "null"
+							},
+							"_createdonbehalfby_value": {
+								"type": "null"
+							},
+							"kp_medicarepartbenddate": {
+								"type": "null"
+							},
+							"_defaultpricelevelid_value": {
+								"type": "null"
+							},
+							"kp_confidentialaddress1": {
+								"type": "null"
+							},
+							"address2_telephone3": {
+								"type": "null"
+							},
+							"address1_line3": {
+								"type": "null"
+							},
+							"_preferredsystemuserid_value": {
+								"type": "null"
+							},
+							"address1_telephone3": {
+								"type": "null"
+							},
+							"telephone3": {
+								"type": "null"
+							},
+							"address2_telephone1": {
+								"type": "null"
+							},
+							"annualincome_base": {
+								"type": "null"
+							},
+							"annualincome": {
+								"type": "null"
+							},
+							"kp_medicarepartdstartdate": {
+								"type": "null"
+							},
+							"lastusedincampaign": {
+								"type": "null"
+							},
+							"_modifiedbyexternalparty_value": {
+								"type": "null"
+							},
+							"managername": {
+								"type": "null"
+							},
+							"address2_line3": {
+								"type": "null"
+							},
+							"address3_utcoffset": {
+								"type": "null"
+							},
+							"kp_age": {
+								"type": "null"
+							},
+							"governmentid": {
+								"type": "null"
+							},
+							"address3_upszone": {
+								"type": "null"
+							},
+							"address3_name": {
+								"type": "null"
+							},
+							"managerphone": {
+								"type": "null"
+							},
+							"aging90_base": {
+								"type": "null"
+							},
+							"_masterid_value": {
+								"type": "null"
+							},
+							"address1_longitude": {
+								"type": "null"
+							},
+							"kp_ada": {
+								"type": "null"
+							},
+							"kp_clinicalprovidertype": {
+								"type": "null"
+							},
+							"emailaddress3": {
+								"type": "null"
+							},
+							"creditlimit_base": {
+								"type": "null"
+							},
+							"kp_dob": {
+								"type": "null"
+							},
+							"processid": {
+								"type": "null"
+							},
+							"lastonholdtime": {
+								"type": "null"
+							},
+							"yomifirstname": {
+								"type": "null"
+							},
+							"_createdbyexternalparty_value": {
+								"type": "null"
+							},
+							"kp_mbi": {
+								"type": "null"
+							},
+							"onholdtime": {
+								"type": "null"
+							},
+							"externaluseridentifier": {
+								"type": "null"
+							},
+							"address1_fax": {
+								"type": "null"
+							},
+							"address1_postofficebox": {
+								"type": "null"
+							},
+							"address1_telephone1": {
+								"type": "null"
+							},
+							"address1_shippingmethodcode": {
+								"type": "null"
+							},
+							"address3_latitude": {
+								"type": "null"
+							},
+							"_slainvokedid_value": {
+								"type": "null"
+							},
+							"home2": {
+								"type": "null"
+							},
+							"kp_aliases": {
+								"type": "null"
+							},
+							"address3_fax": {
+								"type": "null"
+							},
+							"kp_confidentialenddate": {
+								"type": "null"
+							},
+							"pager": {
+								"type": "null"
+							},
+							"entityimage_url": {
+								"type": "null"
+							},
+							"address3_addresstypecode": {
+								"type": "null"
+							},
+							"address2_utcoffset": {
+								"type": "null"
+							},
+							"assistantname": {
+								"type": "null"
+							},
+							"_originatingleadid_value": {
+								"type": "null"
+							},
+							"business2": {
+								"type": "null"
+							},
+							"yomilastname": {
+								"type": "null"
+							},
+							"kp_confidentialcomposite": {
+								"type": "null"
+							},
+							"_kp_departmentid_value": {
+								"type": "null"
+							},
+							"utcconversiontimezonecode": {
+								"type": "null"
+							},
+							"importsequencenumber": {
+								"type": "null"
+							},
+							"kp_preferredlanguagespokentext": {
+								"type": "null"
+							},
+							"address3_stateorprovince": {
+								"type": "null"
+							},
+							"kp_nuid": {
+								"type": "null"
+							},
+							"address3_telephone1": {
+								"type": "null"
+							},
+							"address1_freighttermscode": {
+								"type": "null"
+							},
+							"kp_allspecialties": {
+								"type": "null"
+							},
+							"kp_confidentialaddress2": {
+								"type": "null"
+							},
+							"emailaddress2": {
+								"type": "null"
+							},
+							"kp_confidentialcity": {
+								"type": "null"
+							},
+							"kp_medicarepartdenddate": {
+								"type": "null"
+							},
+							"entityimageid": {
+								"type": "null"
+							},
+							"_preferredserviceid_value": {
+								"type": "null"
+							},
+							"address3_composite": {
+								"type": "null"
+							},
+							"callback": {
+								"type": "null"
+							},
+							"address2_line2": {
+								"type": "null"
+							},
+							"aging60_base": {
+								"type": "null"
+							},
+							"kp_internalsynopsisconcern": {
+								"type": "null"
+							},
+							"overriddencreatedon": {
+								"type": "null"
+							},
+							"address2_fax": {
+								"type": "null"
+							},
+							"address3_country": {
+								"type": "null"
+							},
+							"accountrolecode": {
+								"type": "null"
+							},
+							"address1_line2": {
+								"type": "null"
+							},
+							"msdyn_gdproptout": {
+								"type": "null"
+							},
+							"childrensnames": {
+								"type": "null"
+							},
+							"_accountid_value": {
+								"type": "null"
+							},
+							"address2_upszone": {
+								"type": "null"
+							},
+							"kp_isgroupmailbox": {
+								"type": "null"
+							},
+							"kp_primaryaddressenddate": {
+								"type": "null"
+							},
+							"kp_deceaseddate": {
+								"type": "null"
+							},
+							"kp_previousname": {
+								"type": "null"
+							},
+							"address1_primarycontactname": {
+								"type": "null"
+							},
+							"_parentcontactid_value": {
+								"type": "null"
+							},
+							"creditlimit": {
+								"type": "null"
+							},
+							"kp_internalsynopsisrequest": {
+								"type": "null"
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
