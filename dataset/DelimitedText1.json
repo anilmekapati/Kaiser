@@ -14,7 +14,8 @@
 				"container": "kp-source"
 			},
 			"columnDelimiter": "|",
-			"escapeChar": "\\",
+			"rowDelimiter": "\n",
+			"escapeChar": "",
 			"firstRowAsHeader": true,
 			"quoteChar": "\""
 		},
