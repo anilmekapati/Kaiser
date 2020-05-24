@@ -10,14 +10,12 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "json_flatfile.txt",
 				"container": "kp-source"
 			},
 			"columnDelimiter": "|",
-			"rowDelimiter": "\n",
 			"escapeChar": "",
 			"firstRowAsHeader": true,
-			"quoteChar": "\""
+			"quoteChar": ""
 		},
 		"schema": []
 	}
