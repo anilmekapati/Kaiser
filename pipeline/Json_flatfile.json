@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "Json_flatfile",
+						"referenceName": "JSON_TO_SQL_SYNAPSE",
 						"type": "DataFlowReference"
 					},
 					"compute": {
