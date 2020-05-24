@@ -1,0 +1,22 @@
+{
+	"name": "Text_parquet",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ln_onpremise",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "FileServerLocation",
+				"fileName": "Text_parquet.txt"
+			},
+			"columnDelimiter": "|",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

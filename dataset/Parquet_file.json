@@ -1,0 +1,20 @@
+{
+	"name": "Parquet_file",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ln_AzureBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "Text_parquet.parquet",
+				"container": "kp-source"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
