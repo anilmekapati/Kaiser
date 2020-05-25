@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "JSON_TO_SQL_SYNAPSE",
+						"referenceName": "JSON_TO_SQL_SYNAPSE_copy1",
 						"type": "DataFlowReference"
 					},
 					"compute": {
